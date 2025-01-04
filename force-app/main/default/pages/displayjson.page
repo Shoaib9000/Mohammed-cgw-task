@@ -1,0 +1,5 @@
+<apex:page showHeader="false">
+    <p style="text-align:left;font-family: Aeonik,sans-serif; font-size: 16px; font-weight:bold; margin-left: 10px; margin-bottom: 5px;">
+        {!$CurrentPage.parameters.jsonstr}
+    </p>
+</apex:page>

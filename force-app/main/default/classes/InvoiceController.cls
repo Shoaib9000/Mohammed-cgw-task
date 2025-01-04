@@ -2,6 +2,7 @@ public with sharing class InvoiceController {
     public transient String child_relationship_name {get;set;}
     public transient Invoice__c invoice {get;set;}
     public transient List<LineItem__c> lineItemObjs {get;set;}
+    public String jsonstr {get;set;}
     public InvoiceController(ApexPages.StandardController stdController) {
         invoice = new Invoice__c();
         lineItemObjs = new List<LineItem__c>();
@@ -42,6 +43,8 @@ public with sharing class InvoiceController {
             lineItem.Invoice__c = invoice.Id;
         }
         insert lineItemObjs;
+        invoice = [Select Id,InvoiceNumber__c,Total__c,InvoiceReference__c,Account__c,DueDate__c,InvoiceDate__c,(Select Id,LineDescription__c,Quantity__c,UnitPrice__c,Amount__c from LineItems__r) from Invoice__c where Id=:invoice.Id];
+        jsonstr = generateJSON();
     }
 
     public String getObjectName(String origin_record)
@@ -58,5 +61,17 @@ public with sharing class InvoiceController {
             }
         }
         return null;
+    }
+
+    public String generateJSON()
+    {
+        String result = JSON.serialize(invoice);
+        return result;
+    }
+
+    public PageReference redirectToVFPage() {
+        PageReference pageRef = Page.displayjson;
+        pageRef.getParameters().put('jsonstr', jsonstr);
+        return pageRef;
     }
 }

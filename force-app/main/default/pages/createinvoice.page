@@ -9,7 +9,7 @@
                 </td>
                 <td style="border-collapse: collapse; border: 1px solid black;">
                     <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
-                        {!origin_record}
+                        {!invoice.InvoiceReference__c}
                     </p>
                 </td>
             </tr>
@@ -21,7 +21,7 @@
                 </td>
                 <td style="border-collapse: collapse; border: 1px solid black;">
                     <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
-                        {!fieldMap['account']}
+                        {!invoice.Account__c}
                     </p>
                 </td>
             </tr>
@@ -33,7 +33,7 @@
                 </td>
                 <td style="border-collapse: collapse; border: 1px solid black;">
                     <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
-                        {!fieldMap['invoice_date']}
+                        {!invoice.InvoiceDate__c}
                     </p>
                 </td>
             </tr>
@@ -45,7 +45,7 @@
                 </td>
                 <td style="border-collapse: collapse; border: 1px solid black;">
                     <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
-                        {!fieldMap['invoice_due_date']}
+                        {!invoice.DueDate__c}
                     </p>
                 </td>
             </tr>
@@ -61,7 +61,7 @@
                     </p>
                 </td>
             </tr>
-            <apex:repeat value="{!lineItems}" var="lineItem">
+            <apex:repeat value="{!lineItemObjs}" var="lineItem">
                 <tr>
                     <td style="border-collapse: collapse; border: 1px solid black;">
                         <p style="text-align:left;font-family: Aeonik,sans-serif; font-size: 12px; font-weight:bold; margin-left: 10px; margin-bottom: 5px;">
@@ -70,7 +70,7 @@
                     </td>
                     <td style="border-collapse: collapse; border: 1px solid black;">
                         <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
-                            {!lineItem['line_item_description']}
+                            {!lineItem.LineDescription__c}
                         </p>
                     </td>
                 </tr>
@@ -82,7 +82,7 @@
                     </td>
                     <td style="border-collapse: collapse; border: 1px solid black;">
                         <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
-                            {!lineItem['line_item_quantity']}
+                            {!lineItem.Quantity__c}
                         </p>
                     </td>
                 </tr>
@@ -94,7 +94,7 @@
                     </td>
                     <td style="border-collapse: collapse; border: 1px solid black;">
                         <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
-                            {!lineItem['line_item_unit_price']}
+                            {!lineItem.UnitPrice__c}
                         </p>
                     </td>
                 </tr>

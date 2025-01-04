@@ -1,12 +1,11 @@
 public with sharing class InvoiceController {
-    public transient String origin_record { get; set; }
     public transient String child_relationship_name {get;set;}
-    public transient Map<String,String> fieldMap {get;set;}
-    public transient List<Map<String,String>> lineItems {get;set;}
+    public transient Invoice__c invoice {get;set;}
+    public transient List<LineItem__c> lineItemObjs {get;set;}
     public InvoiceController(ApexPages.StandardController stdController) {
-        fieldMap = new Map<String,String>();
-        lineItems = new List<Map<String,String>>();
-        origin_record = ApexPages.currentPage().getParameters().get('origin_record');
+        invoice = new Invoice__c();
+        lineItemObjs = new List<LineItem__c>();
+        invoice.InvoiceReference__c = ApexPages.currentPage().getParameters().get('origin_record');
         String account = ApexPages.currentPage().getParameters().get('account');
         String invoice_date = ApexPages.currentPage().getParameters().get('invoice_date');
         String invoice_due_date = ApexPages.currentPage().getParameters().get('invoice_due_date');
@@ -15,26 +14,34 @@ public with sharing class InvoiceController {
         String line_item_quantity = ApexPages.currentPage().getParameters().get('line_item_quantity');
         String line_item_unit_price = ApexPages.currentPage().getParameters().get('line_item_unit_price');
 
-        String objectName = getObjectName(origin_record);
+        String objectName = getObjectName(invoice.InvoiceReference__c);
         String childquery = '(select id,'+line_item_description+','+line_item_quantity+','+line_item_unit_price+' from '+child_relationship_name+')';
-        String query = 'SELECT Id, '+ invoice_due_date +','+account+','+invoice_date+', '+childquery+' FROM ' + objectName +' where Id =\''+origin_record+'\''; 
+        String query = 'SELECT Id, '+ invoice_due_date +','+account+','+invoice_date+', '+childquery+' FROM ' + objectName +' where Id =\''+invoice.InvoiceReference__c+'\''; 
         List<SObject> records = Database.query(query);
         SObject record = records.get(0);
-        fieldMap.put('account',record.get(account)!=null?String.valueOf(record.get(account)):'');
-        fieldMap.put('invoice_due_date',record.get(invoice_due_date)!=null?String.valueOf(record.get(invoice_due_date)):'');
-        fieldMap.put('invoice_date',record.get(invoice_date)!=null?String.valueOf(record.get(invoice_date)):'');
+        invoice.Account__c = record.get(account)!=null?String.valueOf(record.get(account)):null;
+        invoice.DueDate__c = record.get(invoice_due_date)!=null?(Date)record.get(invoice_due_date):null;
+        invoice.InvoiceDate__c=record.get(invoice_date)!=null?(Date)record.get(invoice_date):null;
+        if(record.getSObjects(child_relationship_name) != null)
+        {
         for(SObject childObject : (List<SObject>)record.getSObjects(child_relationship_name))
         {
-            Map<String,String> lineItemMap = new Map<String,String>();
-            lineItemMap.put('line_item_description',childObject.get(line_item_description)!=null?String.valueOf(childObject.get(line_item_description)):'');
-            lineItemMap.put('line_item_quantity',childObject.get(line_item_quantity)!=null?String.valueOf(childObject.get(line_item_quantity)):'');
-            lineItemMap.put('line_item_unit_price',childObject.get(line_item_unit_price)!=null?String.valueOf(childObject.get(line_item_unit_price)):'');
-            lineItems.add(lineItemMap);
+            LineItem__c lineItem = new LineItem__c();
+            lineItem.LineDescription__c = childObject.get(line_item_description)!=null?String.valueOf(childObject.get(line_item_description)):null;
+            lineItem.Quantity__c= childObject.get(line_item_quantity)!=null?(Decimal)childObject.get(line_item_quantity):null;
+            lineItem.UnitPrice__c = childObject.get(line_item_unit_price)!=null?(Decimal)childObject.get(line_item_unit_price):null;
+            lineItemObjs.add(lineItem);
+        }
         }
     }
 
     public void controllerAction() {
-
+        insert invoice;
+        for(LineItem__c lineItem: lineItemObjs)
+        {
+            lineItem.Invoice__c = invoice.Id;
+        }
+        insert lineItemObjs;
     }
 
     public String getObjectName(String origin_record)

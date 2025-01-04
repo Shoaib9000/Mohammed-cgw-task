@@ -43,7 +43,7 @@ public with sharing class InvoiceController {
             lineItem.Invoice__c = invoice.Id;
         }
         insert lineItemObjs;
-        invoice = [Select Id,InvoiceNumber__c,Total__c,InvoiceReference__c,Account__c,DueDate__c,InvoiceDate__c,(Select Id,LineDescription__c,Quantity__c,UnitPrice__c,Amount__c from LineItems__r) from Invoice__c where Id=:invoice.Id];
+        invoice = [Select Id,InvoiceNumber__c,Account__r.Name,Total__c,InvoiceReference__c,Account__c,DueDate__c,InvoiceDate__c,(Select Id,LineDescription__c,Quantity__c,UnitPrice__c,Amount__c from LineItems__r) from Invoice__c where Id=:invoice.Id];
         jsonstr = generateJSON();
     }
 
@@ -65,7 +65,22 @@ public with sharing class InvoiceController {
 
     public String generateJSON()
     {
-        String result = JSON.serialize(invoice);
+        InvoiceDTO dto = new InvoiceDTO();
+        dto.InvoiceNumber = invoice.InvoiceNumber__c;
+        dto.Total = invoice.Total__c;
+        dto.DueDate = invoice.DueDate__c;
+        dto.InvoiceDate = invoice.InvoiceDate__c;
+        dto.AccountName = invoice.Account__r.Name;
+        dto.LineItems = new List<InvoiceDTO.LineItem>();
+        for(LineItem__c item: invoice.LineItems__r)
+        {
+            InvoiceDTO.LineItem itemdto = new InvoiceDTO.LineItem();
+            itemdto.LineDescription = item.LineDescription__c;
+            itemdto.Quantity = item.Quantity__c;
+            itemdto.UnitPrice = item.UnitPrice__c;
+            dto.LineItems.add(itemdto);
+        }
+        String result = JSON.serialize(dto);
         return result;
     }
 

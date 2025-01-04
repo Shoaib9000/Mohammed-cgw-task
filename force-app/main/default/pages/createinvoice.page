@@ -1,0 +1,104 @@
+<apex:page showHeader="false" extensions="InvoiceController" standardController="Invoice__c" action="{!controllerAction}">
+    <table style="margin: 10px; border: 1px solid black; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width 100%;">
+        <tbody>
+            <tr>
+                <td style="border-collapse: collapse; border: 1px solid black;">
+                    <p style="text-align:left;font-family: Aeonik,sans-serif; font-size: 12px; font-weight:bold; margin-left: 10px; margin-bottom: 5px;">
+                        origin_record
+                    </p>
+                </td>
+                <td style="border-collapse: collapse; border: 1px solid black;">
+                    <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
+                        {!origin_record}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border-collapse: collapse; border: 1px solid black;">
+                    <p style="text-align:left;font-family: Aeonik,sans-serif; font-size: 12px; font-weight:bold; margin-left: 10px; margin-bottom: 5px;">
+                        account
+                    </p>
+                </td>
+                <td style="border-collapse: collapse; border: 1px solid black;">
+                    <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
+                        {!fieldMap['account']}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border-collapse: collapse; border: 1px solid black;">
+                    <p style="text-align:left;font-family: Aeonik,sans-serif; font-size: 12px; font-weight:bold; margin-left: 10px; margin-bottom: 5px;">
+                        invoice_date
+                    </p>
+                </td>
+                <td style="border-collapse: collapse; border: 1px solid black;">
+                    <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
+                        {!fieldMap['invoice_date']}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border-collapse: collapse; border: 1px solid black;">
+                    <p style="text-align:left;font-family: Aeonik,sans-serif; font-size: 12px; font-weight:bold; margin-left: 10px; margin-bottom: 5px;">
+                        invoice_due_date
+                    </p>
+                </td>
+                <td style="border-collapse: collapse; border: 1px solid black;">
+                    <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
+                        {!fieldMap['invoice_due_date']}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border-collapse: collapse; border: 1px solid black;">
+                    <p style="text-align:left;font-family: Aeonik,sans-serif; font-size: 12px; font-weight:bold; margin-left: 10px; margin-bottom: 5px;">
+                        child_relationship_name
+                    </p>
+                </td>
+                <td style="border-collapse: collapse; border: 1px solid black;">
+                    <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
+                        {!child_relationship_name}
+                    </p>
+                </td>
+            </tr>
+            <apex:repeat value="{!lineItems}" var="lineItem">
+                <tr>
+                    <td style="border-collapse: collapse; border: 1px solid black;">
+                        <p style="text-align:left;font-family: Aeonik,sans-serif; font-size: 12px; font-weight:bold; margin-left: 10px; margin-bottom: 5px;">
+                            line_item_description
+                        </p>
+                    </td>
+                    <td style="border-collapse: collapse; border: 1px solid black;">
+                        <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
+                            {!lineItem['line_item_description']}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-collapse: collapse; border: 1px solid black;">
+                        <p style="text-align:left;font-family: Aeonik,sans-serif; font-size: 12px; font-weight:bold; margin-left: 10px; margin-bottom: 5px;">
+                            line_item_quantity
+                        </p>
+                    </td>
+                    <td style="border-collapse: collapse; border: 1px solid black;">
+                        <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
+                            {!lineItem['line_item_quantity']}
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-collapse: collapse; border: 1px solid black;">
+                        <p style="text-align:left;font-family: Aeonik,sans-serif; font-size: 12px; font-weight:bold; margin-left: 10px; margin-bottom: 5px;">
+                            line_item_unit_price
+                        </p>
+                    </td>
+                    <td style="border-collapse: collapse; border: 1px solid black;">
+                        <p style="text-align:left;font-family: Aeonik,sans-serif;font-size:12px;font-weight:normal; margin-left:10px;margin-top:10px;margin-bottom:5px;">
+                            {!lineItem['line_item_unit_price']}
+                        </p>
+                    </td>
+                </tr>
+            </apex:repeat>
+        </tbody>
+    </table>
+</apex:page>

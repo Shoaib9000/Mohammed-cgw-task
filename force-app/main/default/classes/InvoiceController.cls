@@ -38,16 +38,6 @@ public with sharing class InvoiceController {
     }
 
     public void controllerAction() {
-        /*
-        insert invoice;
-        for(LineItem__c lineItem: lineItemObjs)
-        {
-            lineItem.Invoice__c = invoice.Id;
-        }
-        insert lineItemObjs;
-        invoice = [Select Id,InvoiceNumber__c,Account__r.Name,Total__c,InvoiceReference__c,Account__c,DueDate__c,InvoiceDate__c,(Select Id,LineDescription__c,Quantity__c,UnitPrice__c,Amount__c from LineItems__r) from Invoice__c where Id=:invoice.Id];
-        jsonstr = generateJSON();
-        */
     }
 
     public String getObjectName(String origin_record)
@@ -100,9 +90,22 @@ public with sharing class InvoiceController {
         return result;
     }
 
-    public PageReference redirectToVFPage() {
+    public PageReference redirectToJSONPage() {
         PageReference pageRef = Page.displayjson;
         pageRef.getParameters().put('jsonstr', jsonstr);
         return pageRef;
+    }
+
+    public PageReference redirectToRecordPage() {
+        insert invoice;
+        for(LineItem__c item: lineItemObjs)
+        {
+            item.Invoice__c = invoice.Id;
+        }
+        insert lineItemObjs;
+        Id recordId = invoice.Id;
+        PageReference recordPage = new PageReference('/' + recordId);
+        recordPage.setRedirect(true);
+        return recordPage;
     }
 }

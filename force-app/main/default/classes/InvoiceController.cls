@@ -1,7 +1,7 @@
 public with sharing class InvoiceController {
     public transient String child_relationship_name {get;set;}
-    public transient Invoice__c invoice {get;set;}
-    public transient List<LineItem__c> lineItemObjs {get;set;}
+    public Invoice__c invoice {get;set;}
+    public List<LineItem__c> lineItemObjs {get;set;}
     public String jsonstr {get;set;}
     public InvoiceController(ApexPages.StandardController stdController) {
         invoice = new Invoice__c();
@@ -34,9 +34,11 @@ public with sharing class InvoiceController {
             lineItemObjs.add(lineItem);
         }
         }
+        jsonstr = generateJSON();
     }
 
     public void controllerAction() {
+        /*
         insert invoice;
         for(LineItem__c lineItem: lineItemObjs)
         {
@@ -45,6 +47,7 @@ public with sharing class InvoiceController {
         insert lineItemObjs;
         invoice = [Select Id,InvoiceNumber__c,Account__r.Name,Total__c,InvoiceReference__c,Account__c,DueDate__c,InvoiceDate__c,(Select Id,LineDescription__c,Quantity__c,UnitPrice__c,Amount__c from LineItems__r) from Invoice__c where Id=:invoice.Id];
         jsonstr = generateJSON();
+        */
     }
 
     public String getObjectName(String origin_record)
@@ -66,21 +69,34 @@ public with sharing class InvoiceController {
     public String generateJSON()
     {
         InvoiceDTO dto = new InvoiceDTO();
-        dto.InvoiceNumber = invoice.InvoiceNumber__c;
-        dto.Total = invoice.Total__c;
-        dto.DueDate = invoice.DueDate__c;
-        dto.InvoiceDate = invoice.InvoiceDate__c;
-        dto.AccountName = invoice.Account__r.Name;
-        dto.LineItems = new List<InvoiceDTO.LineItem>();
-        for(LineItem__c item: invoice.LineItems__r)
+        dto.Type = 'ACCREC';
+        InvoiceDTO.Contact contact = new  InvoiceDTO.Contact();
+        contact.ContactID = '0000000';
+        dto.Contact = contact;
+        DateTime dt = DateTime.newInstance(invoice.InvoiceDate__c.year(), invoice.InvoiceDate__c.month(), invoice.InvoiceDate__c.day(), 0, 0, 0);
+        Long unixTimestamp = dt.getTime(); 
+        String timezoneOffset = '+0000'; 
+        dto.dt = '\\/Date(' + unixTimestamp + timezoneOffset + ')\\/';
+        dto.DateString = dt.format('yyyy-MM-dd\'T\'HH:mm:ss');
+        dt = DateTime.newInstance(invoice.DueDate__c.year(), invoice.DueDate__c.month(), invoice.DueDate__c.day(), 0, 0, 0);
+        unixTimestamp = dt.getTime(); 
+        timezoneOffset = '+0000'; 
+        dto.DueDate = '\\/Date(' + unixTimestamp + timezoneOffset + ')\\/';
+        dto.DueDateString = dt.format('yyyy-MM-dd\'T\'HH:mm:ss');
+        dto.LineAmountTypes = 'Exclusive';
+        List<InvoiceDTO.LineItem> lineItems = new  List<InvoiceDTO.LineItem>();
+        for(LineItem__c item: lineItemObjs)
         {
             InvoiceDTO.LineItem itemdto = new InvoiceDTO.LineItem();
-            itemdto.LineDescription = item.LineDescription__c;
+            itemdto.Description = item.LineDescription__c;
             itemdto.Quantity = item.Quantity__c;
-            itemdto.UnitPrice = item.UnitPrice__c;
-            dto.LineItems.add(itemdto);
+            itemdto.UnitAmount = item.UnitPrice__c;
+            itemdto.AccountCode = '200';
+            itemdto.DiscountRate = '20';
+            lineItems.add(itemdto);
         }
-        String result = JSON.serialize(dto);
+        dto.LineItems = lineItems;
+        String result = JSON.serialize(dto).replace('\\\\', '\\');
         return result;
     }
 

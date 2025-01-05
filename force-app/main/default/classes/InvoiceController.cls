@@ -93,19 +93,8 @@ public with sharing class InvoiceController {
     public PageReference redirectToJSONPage() {
         PageReference pageRef = Page.displayjson;
         pageRef.getParameters().put('jsonstr', jsonstr);
+        pageRef.getParameters().put('invoicestr',JSON.serialize(invoice));
+        pageRef.getParameters().put('lineitemsstr',JSON.serialize(lineItemObjs));
         return pageRef;
-    }
-
-    public PageReference redirectToRecordPage() {
-        insert invoice;
-        for(LineItem__c item: lineItemObjs)
-        {
-            item.Invoice__c = invoice.Id;
-        }
-        insert lineItemObjs;
-        Id recordId = invoice.Id;
-        PageReference recordPage = new PageReference('/' + recordId);
-        recordPage.setRedirect(true);
-        return recordPage;
     }
 }

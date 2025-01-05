@@ -5,7 +5,6 @@ public with sharing class InvoiceDTO {
 
     public String Type {get;set;}
     public Contact Contact {get;set;}
-    @JsonProperty('Date')
     public String dt {get;set;}
     public String DateString {get;set;}
     public String DueDate {get;set;}

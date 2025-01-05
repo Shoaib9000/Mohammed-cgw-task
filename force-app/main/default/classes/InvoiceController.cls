@@ -86,7 +86,7 @@ public with sharing class InvoiceController {
             lineItems.add(itemdto);
         }
         dto.LineItems = lineItems;
-        String result = JSON.serialize(dto).replace('\\\\', '\\');
+        String result = JSON.serialize(dto).replace('\\\\', '\\').replace('"dt":','"Date":');
         return result;
     }
 

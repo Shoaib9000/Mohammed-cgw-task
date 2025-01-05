@@ -8,5 +8,4 @@
         action="{!redirectToRecordPage}"
         />
         </apex:form>
-        <p>{!invoice}</p>
 </apex:page>
